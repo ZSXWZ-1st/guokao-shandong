@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="theme-color" content="#0b1220">
+<title>2027国考 · 山东岗位地图</title>
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+
+<section id="screen-form" class="screen active">
+  <header class="hero">
+    <h1>2027 国考 · 山东</h1>
+    <p class="sub">先说说你的情况，再看地图</p>
+  </header>
+
+    <div class="actions">
+    <button id="btn-go" class="primary" disabled onclick="window.__goMap && window.__goMap()">看看山东地图</button>
+    <p class="tip">至少选性别和学历</p>
+  </div>
+
+  <div class="card">
+    <div class="field">
+      <label>性别</label>
+      <div class="seg" data-key="gender">
+        <button data-val="男">男</button><button data-val="女">女</button>
+      </div>
+    </div>
+    <div class="field">
+      <label>学历</label>
+      <div class="seg" data-key="edu">
+        <button data-val="专科">专科</button><button data-val="本科">本科</button>
+        <button data-val="硕士">硕士</button><button data-val="博士">博士</button>
+      </div>
+    </div>
+    <div class="field">
+      <label>学位</label>
+      <div class="seg" data-key="degree">
+        <button data-val="有">有学位</button><button data-val="无">无学位</button>
+      </div>
+    </div>
+    <div class="field">
+      <label>政治面貌</label>
+      <div class="seg" data-key="political">
+        <button data-val="中共党员">中共党员</button>
+        <button data-val="共青团员">共青团员</button>
+        <button data-val="群众">群众</button>
+      </div>
+    </div>
+    <div class="field">
+      <label>报考身份</label>
+      <div class="seg" data-key="fresh">
+        <button data-val="应届">应届</button><button data-val="往届">往届</button>
+      </div>
+    </div>
+
+    <div class="field">
+      <label>专业 <span class="lab-note">可多选，岗位要求里包含任一所选专业即算符合</span></label>
+      <div class="chips" id="major-chips"></div>
+      <div class="major-add">
+        <input id="major-input" type="text" placeholder="输入专业名，例如 计算机科学与技术">
+        <button id="major-add-btn">加入</button>
+      </div>
+      <div class="hint" id="major-hint"></div>
+    </div>
+
+
+    <div class="field">
+      <label>服务基层项目经历</label>
+      <div class="seg" data-key="service">
+        <button data-val="none">无</button>
+        <button data-val="村官">村官</button>
+        <button data-val="三支一扶">三支一扶</button>
+        <button data-val="西部志愿者">西部志愿者</button>
+        <button data-val="特岗教师">特岗教师</button>
+        <button data-val="退役士兵">退役士兵</button>
+      </div>
+    </div>
+
+    <div class="field">
+      <label>英语等级</label>
+      <div class="seg" data-key="english">
+        <button data-val="none">无</button>
+        <button data-val="cet4">四级 425+</button>
+        <button data-val="cet6">六级 425+</button>
+      </div>
+    </div>
+
+    <div class="field">
+      <label>基层工作年限</label>
+      <div class="seg" data-key="grass">
+        <button data-val="0">无要求</button><button data-val="1">1年以上</button>
+        <button data-val="2">2年以上</button><button data-val="3">3年以上</button>
+      </div>
+    </div>
+  </div>
+
+</section>
+
+<section id="screen-province" class="screen">
+  <header class="bar">
+    <button class="back" data-go="form">‹ 改条件</button>
+    <div class="bar-title">山东省</div>
+    <div class="bar-sub" id="prov-summary"></div>
+    <button class="upd-btn" id="btn-paste">更新报名数据</button>
+  </header>
+  <div class="mapbox">
+    <svg id="map-prov" preserveAspectRatio="xMidYMid meet"></svg>
+  </div>
+  <div class="legend">
+    <span><i class="dot lv-ok"></i>多</span>
+    <span><i class="dot lv-mid"></i>中</span>
+    <span><i class="dot lv-low"></i>少</span>
+    <span><i class="dot lv-none"></i>无</span>
+  </div>
+  <div class="cards" id="city-list"></div>
+</section>
+
+<section id="screen-city" class="screen">
+  <header class="bar">
+    <button class="back" data-go="province">‹ 回山东</button>
+    <div class="bar-title" id="city-title"></div>
+    <div class="bar-sub" id="city-summary"></div>
+  </header>
+  <div class="mapbox">
+    <svg id="map-city" preserveAspectRatio="xMidYMid meet"></svg>
+  </div>
+  <div class="district-hint">点区县看具体岗位</div>
+  <div class="cards" id="district-list"></div>
+</section>
+
+<div id="drawer" class="sheet">
+  <div class="sheet-inner">
+    <button class="sheet-close" id="drawer-close">✕</button>
+    <div id="drawer-body"></div>
+  </div>
+</div>
+
+<div id="paste-drawer" class="sheet">
+  <div class="sheet-inner">
+    <button class="sheet-close" id="paste-close">✕</button>
+    <h2>粘贴报名数据</h2>
+    <div class="sub">到官方「个人中心 → 职位收藏」，全选表格复制，粘到下面</div>
+    <textarea id="paste-area" placeholder="把收藏页的表格整块复制粘贴到这里…"></textarea>
+    <div class="paste-row">
+      <button class="primary small" id="paste-parse">解析并保存</button>
+      <span id="paste-msg" class="paste-msg"></span>
+    </div>
+    <div id="paste-report" class="paste-report"></div>
+  </div>
+</div>
+
+<div id="detail" class="sheet">
+  <div class="sheet-inner">
+    <button class="sheet-close" id="detail-close">✕</button>
+    <div id="detail-body"></div>
+  </div>
+</div>
+
+<footer class="disclaimer">
+  数据来自官方职位表整理；报名人数需从官方个人中心获取，本工具暂未接入。最终以招录机关解释和官方公告为准。
+</footer>
+
+<script src="assets/app.js"></script>
+</body>
+</html>
